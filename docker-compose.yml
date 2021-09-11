@@ -1,0 +1,8 @@
+version: "3.3"
+services:
+  web:
+    build: .
+    ports:
+            - "80:80"
+    volumes:
+      - "/home/ec2-user/App/index.html:/usr/share/nginx/html/index.html"

@@ -1,0 +1,23 @@
+node{
+    stage ('RUN SHELL SCRIPT'){
+     sh ("cd /home/ec2-user/App/")
+     sh ("/home/ec2-user/App/update.sh ${params.title}")
+    }
+    stage ('build docker-image'){
+     sh ('/usr/local/bin/docker-compose -f /home/ec2-user/App/docker-compose.yml up --force-recreate --build -d')
+    }
+    
+    stage ('Email Notification'){
+     mail bcc: '', body: """Hello, 
+     Jenkins_Build_ID - ${BUILD_ID} 
+     Jenkins_Display_Name - ${BUILD_DISPLAY_NAME}
+     Jenkins_Build_URL - ${BUILD_URL}""", cc: '', from: '', replyTo: '', subject: "jenkins-${JOB_NAME}", to: 'madhurigulve03@gmail.com'  
+    }
+    
+    def item = Jenkins.instance.getItem("pipeline_job")
+
+    def last_job_duration = item.getLastBuild().getDurationString()
+     
+    println last_job_duration
+            
+}
